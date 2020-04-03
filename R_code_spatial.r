@@ -99,3 +99,17 @@ install.packages("ggplot2")
 library(ggplot2)
 
 
+#second day
+setwd("C:/lab/") #to set working directory
+load(".RData")
+ls() #to list of the files used previously in R
+
+#covid ggplot
+library(ggplot2)
+
+data(mpg)
+head(mpg)
+
+ggplot(mpg, aes(x=displ,y=hwy))+geom_point()
+
+
