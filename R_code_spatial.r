@@ -14,7 +14,7 @@ head(meuse)
 
 #we can see that these data are spatial, the variables consider that the points (x,y) are in a space
 
-#coordinates: they are X and Y--> we use tilde ~ totell R that the coordinates are x, y
+#coordinates: they are X and Y--> we use tilde ~ to tell R that the coordinates are x, y
 
 coordinates(meuse)=~x+y
 
@@ -99,25 +99,28 @@ install.packages("ggplot2")
 library(ggplot2)
 
 
-#second day
+#Second day
 setwd("C:/lab/") #to set working directory
 load(".RData")
 ls() #to list of the files used previously in R
 
 #covid ggplot
-library(ggplot2)
+library(ggplot2) #require(ggplot2) will do the same job
 
 data(mpg)
 head(mpg)
 
-#key components: data,aes, geometry
+#key components: data,aes, geometry. Aes indicates the variables that we want to plot. Geometry is apart
 ggplot(mpg, aes(x=displ,y=hwy))+geom_point()
 
+#let's change the geometry, put lines connecting the points
 ggplot(mpg,aes(x=displ,y=hwy))+geom_line()
 
+#now put polygon connecting points
 ggplot(mpg,aes(x=displ,y=hwy))+geom_polygon()
 
-#let's use data from covid
-
+#let's use data from covid, already uploaded
 head(covid)
+
+#we're going to exagerate the points size by number of cases
 ggplot(covid,aes(x=lon,y=lat,size=cases))+geom_point()
