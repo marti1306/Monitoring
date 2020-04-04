@@ -110,6 +110,14 @@ library(ggplot2)
 data(mpg)
 head(mpg)
 
+#key components: data,aes, geometry
 ggplot(mpg, aes(x=displ,y=hwy))+geom_point()
 
+ggplot(mpg,aes(x=displ,y=hwy))+geom_line()
 
+ggplot(mpg,aes(x=displ,y=hwy))+geom_polygon()
+
+#let's use data from covid
+
+head(covid)
+ggplot(covid,aes(x=lon,y=lat,size=cases))+geom_point()
