@@ -1,3 +1,0 @@
-##REMOTE SENSING
-
-install.packages(c("raster","RStoolbox"))
