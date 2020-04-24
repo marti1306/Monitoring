@@ -102,3 +102,80 @@ plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 #the bare soil is in yellow colour
 
+
+###### SECOND DAY
+
+setwd("C:/lab/")
+load("rs.RData")
+library(raster)
+p224r63_1988 <- brick("p224r63_1988_masked.grd")
+
+p224r63_1988
+plot(p224r63_1988)
+
+#so now we want to compare the images of different years
+#exercise: plot in visible RGB 321 both images
+par(mfrow=c(2,1))
+
+plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+
+#exercise: plot in RGB 432
+
+par(mfrow=c(2,1))
+
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+
+##let's see the real noises in these images -- hot to enhance the noise
+##it enhance the level of noise (like presence of clouds--> noise due to evapotranspiration of the environment)
+par(mfrow=c(2,1))
+
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist") #hist stands for histogram: it stretches the noise
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
+
+#the level of noise is a powerful ecological indicator of the evapotranspirative level of the forest! 
+#in the 1988 there is more noise--> the amazon forest was more alive, there was more humidity
+
+#Bands of LANDSAT
+# B1: blue
+# B2: green
+# B3: red: B3_sre (spectrum reflectance)
+# B4: near infrared (nir) 
+
+##we want to see the DVI: NIR-RED
+
+dvi2011 <- p224r63_2011$B4_sre - p224r63_2011$B3_sre
+cl <- colorRampPalette(c("darkorchid3", "light blue", "lightpink4"))(100)
+plot(dvi2011,col=cl)
+#the image that we got has th DVI not homogenous--> due to the presence of water, streams within the forest
+
+#exercise: DVI for 1988
+dvi1988 <- p224r63_1988$B4_sre - p224r63_1988$B3_sre
+cl <- colorRampPalette(c("darkorchid3", "light blue", "lightpink4"))(100)
+plot(dvi1988,col=cl)
+
+
+#to make the difference between the 2 years
+diff <- dvi2011-dvi1988
+plot(diff)
+#green values represent where the DVI difference was higher
+
+#it's important at the scale on which we make the analysis .. because we may acquire or loose info by changing the scale
+#to change the scale we modify the grain (for RS it's the same or resolution: the dimension of pixels)
+#so now let's change it--> we use the aggregate function: it aggregates pixels in order to 
+#the higher is the dimension of pixel (coarser grain), the lower is the capability to see objects --> so smaller pixel have a higher resolution.
+#high resolution data can provide infos as tree heights or tree temperature --> it can be used to study microclimate
+
+#fact argument stands for the amount of time we want ot increase the pixel dimension (from 30 to 90, the factor is 3)
+
+p224r63_2011res <- aggregate(p224r63_2011, fact=10) #res stands for resembling (the dimension of pixels)
+p224r63_2011res100 <- aggregate(p224r63_2011, fact=100)
+
+
+par(mfrow=c(3,1))
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011res100, r=4, g=3, b=2, stretch="Lin")
+
+#LANDSAT images have a resolution of 30mx30m (--> size of the pixels: medium resolution)
