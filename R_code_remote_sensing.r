@@ -179,3 +179,51 @@ plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011res100, r=4, g=3, b=2, stretch="Lin")
 
 #LANDSAT images have a resolution of 30mx30m (--> size of the pixels: medium resolution)
+
+
+#### THIRD DAY: Rcode DVI deforestation
+
+#download defor1 and defor2 images. 
+
+setwd("C:/lab/)
+
+library(raster)
+
+defor1 <- brick("defor1_.jpg")
+#let's brick the 2nd raster
+defor2 <- brick("defor2_.jpg")
+
+#let's plot the 2 rasters in RGB space
+#we put the NIR on top of the Red, the Red on top of the Green and the Green band on top of the Blue band
+#band1:NIr  defor1_.1
+#band2:red  defor1_.2
+#band3:green
+plotRGB(defor1, r=1, g=2, b=3, stretch="Lin") #we stretch in order to allow all the colors to be seen
+#this plot show the amazon forest patch before agriculture came. 
+
+plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
+
+#par function to create a multiframe
+par(mfrow=c(1,2))
+plotRGB(defor1, r=1, g=2, b=3, stretch="Lin")
+plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
+
+dvi1 <- defor1$defor1_.1 - defor1$defor1_.2 ##to calculate the dvi of the first image, we made the difference between the NIR band and the RED band
+dvi2 <- defor2$defor2_.1 - defor2$defor2_.2
+
+cl <- colorRampPalette(c('darkblue','yellow','red','black'))(100) # specifying a color scheme
+
+par(mfrow=c(1,2))
+plot(dvi1, col=cl)
+plot(dvi2,col=cl)
+
+difdvi <- dvi1 - dvi2 #difference of dvi
+
+dev.off()
+cld <- colorRampPalette(c('blue','white','red'))(100) 
+plot(difdvi, col=cld)
+# the plot that we got shows in red the areas with high difference of dvi, 
+
+hist(difdvi) #to make histogram of the difference of dvi
+
+##so with this exercise we saw how to visualizev the difference of an indicator over time
