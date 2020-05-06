@@ -45,5 +45,10 @@ pairs(p224r63_1988)
 difpca <- p224r63_2011_pca$map - p224r63_1988_pca$map
 plot(difpca)
 
- 
+cldif <- colorRampPalette(c('blue','black','yellow'))(100) 
+
+plot(difpca$PC1,col=cldif) #the image show the highest possible variation of the 2 images, in yellow the sites where there has been major variation
+##most of the variation is carried out by the principal component (PC1) - we saw it on model
+
+###so we compacted the many dimensions of the bands making pca analysis!
 
