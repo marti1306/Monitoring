@@ -36,15 +36,6 @@ plot(std_sntr, col=cl)
 plotRGB(sd_snt, 4, 3, 2, stretch="lin")
 
 
-
-
-
-
-
-
-
-
-
 # plot(std_snt8bit, col=cl)
 
 std_sntr1 <- focal(snt_r$prova5_.1, w=window, fun=sd)
@@ -69,3 +60,51 @@ cl <- colorRampPalette(c('dark blue','green','orange','red'))(100) #
 plot(std_sntrpca, col=cl)
 
 ##############
+
+##2 day
+## FOCAL on Cladonia
+
+setwd("C:/lab/")
+library(RStoolbox)
+library(raster) # two function - we can use 1.raster(import one single layer, one bend) 2.brick(import several layers)
+# now we have three layers so we need brick function
+
+clad <- brick("cladonia_stellaris_calaita.JPG")
+plotRGB(clad, 1,2,3, stretch="lin")
+
+#to measure variability and selection of the PC
+#first we select the extection of the window to pass on top of the image
+# we create a window to analyze the standard deviation of a 3x3 matrix, and so 3x3 pixel
+# number one is an arbitrary value
+window <- matrix(1, nrow = 3, ncol = 3)
+window
+
+#PCA analysis to see which componenet is the best to compute st.dev. 
+library(RStoolbox) #for PCA
+
+cladpca <- rasterPCA(clad)
+cladpca
+
+summary(cladpca$model) #98% of image info is contained in the first component
+
+plotRGB(cladpca$map, 1, 2, 3, stretch='Lin')
+
+
+#focal function applied to PC1 to identify the standard deviation of all the neighbours cells 
+sd_clad <- focal(cladpca$map$PC1, w=window, fun=sd)
+
+PC1_agg <- aggregate(cladpca$map$PC1, fact=10) #to accelerate the calculation by aggregating the pixels by a factor of 10
+sd_clad_agg <- focal(PC1_agg, w=window, fun=sd)
+
+cl <- colorRampPalette(c('yellow','violet','black'))(100)
+par(mfrow = c(1, 2))
+plot(sd_clad, col=cl)
+plot(sd_clad_agg, col=cl)
+
+# plot the calculation 
+#it is telling us how much complex is the organism, with the violet and pink 
+par(mfrow=c(1,2))
+cl <- colorRampPalette(c('yellow','violet','black'))(100) #
+plotRGB(clad, 1,2,3, stretch="lin")
+plot(sd_clad, col=cl)
+
