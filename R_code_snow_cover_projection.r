@@ -42,7 +42,7 @@ plot(snow2020,col=cl)
 #lapply function: it applies a certain function (in this case raster in order to import several layers) to several elements
 
 rlist <- list.files(pattern="snow") #make a list of the files in a certain place. Need to write the pattern (common letters in the name of the files) that all the elements share 
-#this is the list to which we want to aply a certain function specified by lapply
+#this is the list to which we want to apply a certain function specified by lapply
 
 import <- lapply(rlist, raster) #now we imported all the files
 
@@ -52,7 +52,6 @@ snow.multitemp
 
 plot(snow.multitemp, cl) 
 #this method of importing data (using lapply function) is faster, less lines of code
-
 #this method is important because monitoring need several data as it monitors changes in time
 
 ###let's make now predictions! given current Temperature let's see how the snow cover will change
@@ -71,9 +70,39 @@ source("prediction.r") #source is a function to launch the whole code! --> time 
 # make a time variable (to be used in regression)
 #time <- 1:nlayers(snow.multitemp)
 
-# run the regression
+# run the regression - linear model 
 #fun <- function(x) {if (is.na(x[1])){ NA } else {lm(x ~ time)$coefficients[2] }} 
 #predicted.snow.2025 <- calc(extension, fun) # time consuming: make a pause!
 #predicted.snow.2025.norm <- predicted.snow.2025*255/53.90828
+
+
+###2nd day
+setwd("C:/lab/snow/")
+library(raster)
+
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+
+#to see the prediction map
+load("name.RData")
+
+#or
+prediction <- raster("predicted.2025.norm.tif") #raster function as it is only a single image 
+plot(prediction, col=cl)
+
+#how to export the output:
+writeRaster(prediction, "final.tif") #within quotes there is the title that you give to the output
+
+#let's make  a final stack with all the images, including the prediction
+final.stack <- stack(snow.multitemp, prediction)
+
+#export the R Graph
+pdf("my_final_graph.pdf") #it can be done also with png extension using png function instead of pdf
+plot(final.stack, col=cl)
+dev.off()
+
+
+
+
+
 
 
