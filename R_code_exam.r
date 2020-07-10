@@ -1,9 +1,28 @@
 ###########R_code_exam.r
 
+#INDEX:
+#1. R first code
+#2. R_code_multipanel.r
+#3. R_code_spatial.r
+#4. R_code_point_pattern.r
+#5. R_code_multivar.r
+#6. R_code_remote_sensing.r
+#7. R_code_PCA_ remote_sensing.r
+#8. R_code_ecosystem_functions.r
+#9. R_code_radiance.r
+#10. R_code_faPAR.r
+#11. R_code_EBVs.r
+#12. R_code_NO2.r
+#13. R_code_snow_cover_projection.r
+#14. R_code_interpolation.r
+#15. R_code_species_distribution_modelling.r
+#16. R_code_crop.r
+
+
 ###R first code
-install.packages("sp")
-library(sp)
-data(meuse)
+install.packages("sp") #function to install packages #sp stands for Spatial Data #quotes because we call something out of the R software
+library(sp) #library function explains to R that we're going to use that package
+data(meuse) #function to use data
 
 # Let's see how the meuse dataset is structured:
 meuse
@@ -18,11 +37,11 @@ attach(meuse)
 
 plot(zinc,copper)
 
-plot(zinc,copper,col="green")
+plot(zinc,copper,col="green") #col stands for colour, the colour name need to be quoted
 
-plot(zinc,copper,col="green",pch=19)
+plot(zinc,copper,col="green",pch=19) #pch is point character - each number corrisponds to a symbol
 
-plot(zinc,copper,col="green",pch=19,cex=2)
+plot(zinc,copper,col="green",pch=19,cex=2) #cex is character exageration
 
 ####################################################################
 
@@ -54,8 +73,8 @@ pairs(meuse) #pairs function returns a plot matrix, consisting of scatterplots f
 #how to reduce the amount of variables
 # ~ this is called tilde
 pairs(~cadmium+copper+lead+zinc, data=meuse)
+#in this case we hilight the fact that we want the plots of the pairs of a subset of variables
 
-#similar way to do line 23- in this case we hilight the fact that we want the plots of the pairs of a subset of variables
 #la virgola dopo la parentesi dice "inizia da", i numeri s riferiscono al numero di colonna (il numero relativo alle variabili di interesse)
 pairs(meuse[,3:6])
 
@@ -87,7 +106,7 @@ coordinates(meuse)=~x+y
 #plot function shows the points measured on the field with the two coordinates
 plot(meuse)
 
-#spplot is the function that opens the plot of the sp package, --> open brackets and write which dataset we're using.. and then the variable that we want to see)
+#spplot is the function that opens the plot of the sp package --> open brackets and write which dataset we're using.. and then the variable that we want to see)
 spplot(meuse, "zinc")
 
 #we can see from the graph that zinc is concentrated in the northern part (yellow colour, each colour define a specific range of concentration) because the prof knows that there is a river there
@@ -153,7 +172,7 @@ library(ggplot2)
 ##2nd day
 setwd("C:/lab/") #to set working directory
 load(".RData")
-ls() #to list of the files used previously in R
+ls() #to list the files used previously in R
 
 #covid ggplot
 library(ggplot2) #require(ggplot2) will do the same job
@@ -1153,7 +1172,7 @@ plot(s1, col=cl)
 ###R_code_crop.r
 #how to crop satellite images 
 
-setwd("~/lab")
+setwd("C:/lab/")
 library(raster)
 library(ncdf4) 
 
