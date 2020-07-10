@@ -165,7 +165,7 @@ plot(country, cases, las=2, cex.axis=0.5) #to exagerate the character
 
 #to use ggplot we need three components: data, aesthetic mappings (the variables composing the aesthetics of this graph), and geometrical function (by which we want to show the data)
 
-#ggplot2 package
+#ggplot2 package for visualising data by graphs
 install.packages("ggplot2")
 library(ggplot2)
 
@@ -197,16 +197,18 @@ ggplot(covid,aes(x=lon,y=lat,size=cases))+geom_point()
 ####################################################################################
 
 ###R_code_point_pattern
+#important to study populations distribution
+#typical point pattern distributions are: clumped, uniform, random
 
-#first function of 8th of April
 setwd("C:lab")
-library(spatstat)
+library(spatstat) #package for analysing spatial point patterns
 load(point_pattern_analysis)
 
 #let's plot the density map (D)
 plot(d)
 
 #points function show points on the top of previous map--> to see how much dense are the points in space
+#each info attached to each point in the point pattern is called a mark variable
 points(covids)
 
 #now we start to upload geographical info --> points, lines, ...
@@ -272,7 +274,8 @@ dev.off()
 ############################################################################################
 
 ###R_code_multivar.r
-### R code for MULTIVARIATE ANALYSIS
+### R code for MULTIVARIATE ANALYSIS--> many variables
+#how to monitor population and communities changes in time
 
 setwd("C:/lab/")
 library(vegan)
@@ -287,7 +290,7 @@ head(biomes)
 #MULTIVARIATE ANALYSIS
 #decorana stands for detrended correspondence analysis --> we're going to detrend the 2 dimensions that we have (20 plots) into just 2 dimensions
 # we assign a name to a function that corresponds to decorana analysis applied to the dataset
-multivar <- decorana(biomes)
+multivar <- decorana(biomes) #decorana: multivariate technique to find main gradients in large , species rich but usually sparse data matrices that typify ecological community data
 
 plot(multivar)
 
@@ -323,6 +326,7 @@ ordispider(multivar,type,col=1:4,label=TRUE)
 
 ######R_code_remote_sensing.r
 ##REMOTE SENSING
+#images are matrices of numbers translated into colours #sensors measure how much an object reflect the electromagnetic spectrum, and which part of it
 
 install.packages(c("raster","RStoolbox"))
 setwd("C:/lab/")
@@ -1182,9 +1186,9 @@ cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
 plot(snow, col=cl)
 
 ext <- c(0, 20, 35, 50)
-zoom(snow, ext=ext)
+zoom(snow, ext=ext) #zoom function allow to draw a rectangle to zoom on a certain image
 
-# crop and create a new image
+# crop function allows to crop and to create a new image
 snowitaly <- crop(snow, ext) 
 plot(snowitaly, col=cl) 
 
