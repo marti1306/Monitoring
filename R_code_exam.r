@@ -45,7 +45,7 @@ plot(zinc,copper,col="green",pch=19,cex=2) #cex is character exageration
 
 ####################################################################
 
-###R_code_multipanel.r
+###1. R_code_multipanel.r
 ### Multipanel in R
 
 install.packages("GGally") #this package is used only to use the function ggpair 
@@ -85,7 +85,7 @@ pairs(meuse[,3:6],pch=15,col="violet",cex=1.5)
 ggpairs(meuse[,3:6])
 ###########################################################################################
 
-###R_code_spatial.r
+###2. R_code_spatial.r
 #R code for spatial view of points
 
 #1st of all: showing the points of the last time, (sp library) to visualise them in a map
@@ -196,7 +196,7 @@ head(covid)
 ggplot(covid,aes(x=lon,y=lat,size=cases))+geom_point()
 ####################################################################################
 
-###R_code_point_pattern
+###3. R_code_point_pattern
 #important to study populations distribution
 #typical point pattern distributions are: clumped, uniform, random
 
@@ -273,7 +273,7 @@ dev.off()
 #in this case it's not a study with time as a variable, since there is no time dimension in this plot
 ############################################################################################
 
-###R_code_multivar.r
+###4. R_code_multivar.r
 ### R code for MULTIVARIATE ANALYSIS--> many variables
 #how to monitor population and communities changes in time
 
@@ -324,7 +324,7 @@ ordispider(multivar,type,col=1:4,label=TRUE)
 #for example,by adding more dimensions (DCA), we add more infos and this time the species that was previously outside the ellipse may be now inside.
 ############################################################################################
 
-######R_code_remote_sensing.r
+######5. R_code_remote_sensing.r
 ##REMOTE SENSING
 #images are matrices of numbers translated into colours #sensors measure how much an object reflect the electromagnetic spectrum, and which part of it
 
@@ -342,7 +342,7 @@ plot(p224r63_2011)
 # B1: blue
 # B2: green
 # B3: red
-# B4: near infrared (nir) 
+# B4: near infrared (nir) #one of the most powerful band to monitor ecosystems
 # B5: medium infrared
 # B6: thermal infrared
 # B7: medium infrared
@@ -401,7 +401,7 @@ dev.off()
 
 #RGB -- there are 3 components (red,green,blue), we show the satellite image with natural colours
 #plot by RGB function, we associate the red (B3), green(B2) blue (B1)bands with the corresponding colours
-#stretch in order to see colours better --> it's linear
+#stretch in order to see colours better --> it's linear #it stretches the original data (example: if they go from 50 to 100, after stretch they will go from 0 to 100)
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin") #the numbers stands for the number of the bands (B3,B2,B1)
 
 #now we see the image as our human eye could see it from the satellite
@@ -410,6 +410,7 @@ plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin") #the numbers stands for the 
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 #so here the NIR band is on the top of the red component of the RGB
 #we see better the water in the forest and new areas that are being opened within the forest
+
 
 #exercise: put the NIR on top of the Green component of the RGB
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
