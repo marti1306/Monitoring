@@ -915,7 +915,7 @@ library(raster)
 no2list <- list.files(pattern="EN") #list.files function produce a character vector of the names of files or directories 
 no2list
 
-import <- lapply(rlist, raster)
+import <- lapply(rlist, raster) #lapply function: it applies a certain function (in this case raster in order to import several layers) to several elements
 EN <- stack(import)
 cl <- colorRampPalette(c('red','orange','light blue'))(100) 
 plot(EN, col=cl)
