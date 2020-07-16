@@ -1195,3 +1195,66 @@ plot(snowitaly, col=cl)
 
 # zoom(snow, ext=drawExtent())
 # crop(snow, drawExtent())
+
+########
+##R_code_exam
+
+#Project: land cover pattern analysis and then time series to detect changes in land cover patterns in Mugello.
+#download NDVI300m of April 2016, and april 2020, if using Copernicus data
+#download April 2014 and April 2020, if using other satellites data ex Landsat, Modis
+
+#1st step: calculate NDVI (see pag 155) 
+#2nd step: Moving Window Technique, refer to R_code_EBVs --> make PCA analysis. and refer to pag. 246 to 249.
+#3rd step: Time Series--> refer to code_NO2
+
+
+#TAV project: detect changes in vegetation status due to water stress caused by TAV project
+#02 august 1995 and 14/08/2011 images - Landsat 4-5 TM (30 m resolution)
+
+#step 0: crop the image based on mugello shp
+#1st step: calculate NDVI
+#2nd step: make the difference
+#3rd step:trovare info su come detect water stress
+
+setwd("C:/lab/")
+library(raster)
+
+aug1995 <- list.files("LT05_L1TP_192029_19950802_20180214_01_T1_sr_band", pattern=".tif$", full.names=T)
+aug1995
+
+##R_code_exam
+
+#Project: land cover pattern analysis and then time series to detect changes in land cover patterns in Mugello.
+#download NDVI300m of April 2016, and april 2020, if using Copernicus data
+#download April 2014 and April 2020, if using other satellites data ex Landsat, Modis
+
+#1st step: calculate NDVI (see pag 155) 
+#2nd step: Moving Window Technique, refer to R_code_EBVs --> make PCA analysis. and refer to pag. 246 to 249.
+#3rd step: Time Series--> refer to code_NO2
+setwd("C:/lab/exam")
+
+library(raster)
+library(rgdal)
+
+aug1995 <-list.files (pattern="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band")
+aug1995
+
+#import the image
+import1995 <- lapply(aug1995, raster)
+rs_1995 <- brick(import1995)
+rs_1995
+plotRGB(rs_1995, r=3, g=2, b=1, stretch="Lin")
+
+#crop the image with mugello shp
+crop_extent <- readOGR(dsn="C:/lab", layer="ammi_uc_mugello_linee")
+crop_extent
+#matching CRS 
+myExtent <- spTransform(crop_extent, CRS("+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "))
+myExtent 
+
+masked <- mask(x=rs_1995, mask=myExtent)
+cropped <- crop(x=masked, y=extent(myExtent))
+mugello1995 <- crop(rs_1995, myExtent)
+mugello1995def <- mask(mugello_1995, myExtent)
+plot(mugello1995,)
+
