@@ -19,9 +19,9 @@
 #16. R_code_crop.r
 
 
-###R first code
+###1. R first code
 install.packages("sp") #function to install packages #sp stands for Spatial Data #quotes because we call something out of the R software
-library(sp) #library function explains to R that we're going to use that package
+library(sp) #library function explains to R that we're going to use that package #require function will do the same job
 data(meuse) #function to use data
 
 # Let's see how the meuse dataset is structured:
@@ -30,11 +30,10 @@ meuse
 # let's look at the first row of the set
 head(meuse)
 
-# lets' plot two variables
-
 # let's see of the zinc concentration is related to that of copper
 attach(meuse)
 
+# lets' plot two variables
 plot(zinc,copper)
 
 plot(zinc,copper,col="green") #col stands for colour, the colour name need to be quoted
@@ -45,12 +44,12 @@ plot(zinc,copper,col="green",pch=19,cex=2) #cex is character exageration
 
 ####################################################################
 
-###1. R_code_multipanel.r
+###2. R_code_multipanel.r
 ### Multipanel in R
 
 install.packages("GGally") #this package is used only to use the function ggpair 
 library (GGally)
-library(sp) #require(sp) will do the same jub, it's a similar function
+library(sp) #require(sp) will do the same job, it's a similar function
 
 data(meuse)
 #how to attach meuse to use its variables
@@ -85,7 +84,7 @@ pairs(meuse[,3:6],pch=15,col="violet",cex=1.5)
 ggpairs(meuse[,3:6])
 ###########################################################################################
 
-###2. R_code_spatial.r
+###3. R_code_spatial.r
 #R code for spatial view of points
 
 #1st of all: showing the points of the last time, (sp library) to visualise them in a map
@@ -196,19 +195,39 @@ head(covid)
 ggplot(covid,aes(x=lon,y=lat,size=cases))+geom_point()
 ####################################################################################
 
-###3. R_code_point_pattern
+###4. R_code_point_pattern
 #important to study populations distribution
 #typical point pattern distributions are: clumped, uniform, random
 
-setwd("C:lab")
+setwd("C:/lab/")
 library(spatstat) #package for analysing spatial point patterns
-load(point_pattern_analysis)
+
+attach(covid)
+head(covid) 
+
+#let's explain x and y variables and the range for the numbers with c, that is concatenate function
+covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # ?ppp (planar point pattern) creates an object of class "ppp" representing a point pattern dataset in the two-dimensional plane
+
+# density of the covids object that we created before
+d <- density(covids)
+
+#let's plot the density map (d)
+plot(d)
+
+points(covids)
+#points function show points on the top of previous map--> to see how much dense are the points in space
+#each info attached to each point in the point pattern is called a mark variable
+
+
+### Second lesson
+setwd("C:/lab/")
+library(spatstat)
+
+load(point_pattern_analysis) #function to load load the work previously done and saved
 
 #let's plot the density map (D)
 plot(d)
 
-#points function show points on the top of previous map--> to see how much dense are the points in space
-#each info attached to each point in the point pattern is called a mark variable
 points(covids)
 
 #now we start to upload geographical info --> points, lines, ...
@@ -273,12 +292,12 @@ dev.off()
 #in this case it's not a study with time as a variable, since there is no time dimension in this plot
 ############################################################################################
 
-###4. R_code_multivar.r
+###5. R_code_multivar.r
 ### R code for MULTIVARIATE ANALYSIS--> many variables
 #how to monitor population and communities changes in time
 
 setwd("C:/lab/")
-library(vegan)
+library(vegan) #vegan stands for vegetation analysis
 
 #now we assign a function (naming it "biomes") to an object (the dataset we want to use); the argument head stands for the header (in the dataset the first row and column are header, not data)
 #sep argument stands for separator: R will read that the separator is a comma, so each time there is a comma R knows that there is a new column or row
@@ -324,7 +343,7 @@ ordispider(multivar,type,col=1:4,label=TRUE)
 #for example,by adding more dimensions (DCA), we add more infos and this time the species that was previously outside the ellipse may be now inside.
 ############################################################################################
 
-######5. R_code_remote_sensing.r
+######6. R_code_remote_sensing.r
 ##REMOTE SENSING
 #images are matrices of numbers translated into colours #sensors measure how much an object reflect the electromagnetic spectrum, and which part of it
 
@@ -483,7 +502,7 @@ plot(diff)
 #high resolution data can provide infos as tree heights or tree temperature --> it can be used to study microclimate
 
 #fact argument stands for the amount of time we want to increase the pixel dimension (from 30 to 90, the factor is 3)
-#aggregate function
+#aggregate function:it aggregates pixels to make a coarser grain, fact is the argument that indicates the factor of increase of the pixels.
 p224r63_2011res <- aggregate(p224r63_2011, fact=10) #res stands for resembling (the dimension of pixels)
 p224r63_2011res100 <- aggregate(p224r63_2011, fact=100)
 
@@ -517,7 +536,7 @@ plotRGB(defor1, r=1, g=2, b=3, stretch="Lin") #we stretch in order to allow all 
 
 plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
 
-#par function to create a multiframe
+#par function to create a multiframe by rows= 1 line, 2 columns
 par(mfrow=c(1,2))
 
 plotRGB(defor1, r=1, g=2, b=3, stretch="Lin")
@@ -540,7 +559,7 @@ hist(difdvi) #to make histogram of the difference of dvi
 ##so with this exercise we saw how to visualize the difference of an indicator over time
 ############################################################################################
 
-###R_code_PCA_ remote_sensing.r
+###7. R_code_PCA_ remote_sensing.r
 
 setwd("C:/lab/")
 
@@ -597,7 +616,7 @@ plot(difpca$PC1,col=cldif) #the image show the highest possible variation of the
 ###so we compacted the many dimensions of the bands making pca analysis!
 ############################################################################################
 
-###R_code_ecosystem_functions.r
+###8. R_code_ecosystem_functions.r
 
 ## assessing the biomass through NDVI in order to see the potential in terms of ecosystem functions of analyzed ecosystems
 #code to view biomass over the world and calculate changes in ecosystem functions
@@ -608,8 +627,8 @@ plot(difpca$PC1,col=cldif) #the image show the highest possible variation of the
 #raster data are all data based on pixel
 #we're going to show the medium value of biomass for several years (1999-2017)
 
-install.packages("rasterdiv")
-install.packages("rasterVis")
+install.packages("rasterdiv") #it provides functions to calculate indices of diversity
+install.packages("rasterVis") # it's a package that implements visualization methods for rasters 
 
 library(rasterdiv)
 library(rasterVis)
@@ -632,14 +651,14 @@ levelplot(copNDVI)
 #the graph on the right (of the previous levelplot) is a plot with on x axis mean DVI values and on y axis the latitude
 #similar is for the upper part graph, where on the x axis there are mean DVI values, while on y axis longitude
 
-copNDVI10 <- aggregate(copNDVI, fact=10) #we increase the pixel dimension of factor ten
+copNDVI10 <- aggregate(copNDVI, fact=10) #we increase the pixel dimension by a factor of ten
 levelplot(copNDVI10)
 
 copNDVI100 <- aggregate(copNDVI, fact=100)
 levelplot(copNDVI100) 
 ############################################################################################
 
-###R_code_radiance.r
+###9. R_code_radiance.r
 ###how to code ecosystem reflectance
 
 library(raster)
@@ -694,7 +713,7 @@ text(toy8bits, digits=2)
 #so we transformed radiant values into bits --> digital numbers
 ############################################################################################
 
-###R_code_faPAR.r
+###10. R_code_faPAR.r
 
 ##we're dealing on how to look at chemical cycling from satellite data
 ##on IOL there is the first part of the code on how to aggregate pixels of a copernicus image 
@@ -797,7 +816,7 @@ abline(model2, col="red")
 # but also points with high biomass but low photosynthesis so they are far from red line
 ############################################################################################
 
-###R_code_EBVs.r
+###11. R_code_EBVs.r
 #essential biodiversity variables
 #code to measure standard deviation as proxy of heterogeneity --> biodiversity 
 
@@ -905,7 +924,7 @@ plotRGB(clad, 1,2,3, stretch="lin")
 plot(sd_clad, col=cl)
 ############################################################################################
 
-###R_code_NO2.r
+###12. R_code_NO2.r
 #NO2 levels over Italy pre- and during- Covid 19
 
 setwd("C:/lab/NO2")
@@ -949,7 +968,7 @@ plot(EN$EN_0001, EN$EN_0013)
 abline(0,1,col="red") #many values are below the line: it means that there has been a decrease of values between the 2 images
 ############################################################################################
 
-###R_code_snow_cover_projection.r
+###13. R_code_snow_cover_projection.r
 
 #R_code_snow.r #using Copernicus data #snow as environmental indicator
 #aim of this code: make future projections!
@@ -1053,7 +1072,7 @@ plot(final.stack, col=cl)
 dev.off()
 ############################################################################################
 
-###R_code_interpolation.r
+###14. R_code_interpolation.r
 
 setwd("C:/lab/")
 
@@ -1110,7 +1129,7 @@ plot(C)
 points(inp.psam.ppp)
 ############################################################################################
 
-###R_code_species_distribution_modelling.r
+###15. R_code_species_distribution_modelling.r
 
 # install.packages("sdm") #sdm package for developing species distribution models
 # install.packages("rgdal")
@@ -1174,7 +1193,7 @@ s1 <- stack(preds,p1)
 plot(s1, col=cl)
 ############################################################################################
 
-###R_code_crop.r
+###16. R_code_crop.r
 #how to crop satellite images 
 
 setwd("C:/lab/")
@@ -1197,64 +1216,6 @@ plot(snowitaly, col=cl)
 # crop(snow, drawExtent())
 
 ########
-##R_code_exam
-
-#Project: land cover pattern analysis and then time series to detect changes in land cover patterns in Mugello.
-#download NDVI300m of April 2016, and april 2020, if using Copernicus data
-#download April 2014 and April 2020, if using other satellites data ex Landsat, Modis
-
-#1st step: calculate NDVI (see pag 155) 
-#2nd step: Moving Window Technique, refer to R_code_EBVs --> make PCA analysis. and refer to pag. 246 to 249.
-#3rd step: Time Series--> refer to code_NO2
 
 
-#TAV project: detect changes in vegetation status due to water stress caused by TAV project
-#02 august 1995 and 14/08/2011 images - Landsat 4-5 TM (30 m resolution)
-
-#step 0: crop the image based on mugello shp
-#1st step: calculate NDVI
-#2nd step: make the difference
-#3rd step:trovare info su come detect water stress
-
-setwd("C:/lab/")
-library(raster)
-
-aug1995 <- list.files("LT05_L1TP_192029_19950802_20180214_01_T1_sr_band", pattern=".tif$", full.names=T)
-aug1995
-
-##R_code_exam
-
-#Project: land cover pattern analysis and then time series to detect changes in land cover patterns in Mugello.
-#download NDVI300m of April 2016, and april 2020, if using Copernicus data
-#download April 2014 and April 2020, if using other satellites data ex Landsat, Modis
-
-#1st step: calculate NDVI (see pag 155) 
-#2nd step: Moving Window Technique, refer to R_code_EBVs --> make PCA analysis. and refer to pag. 246 to 249.
-#3rd step: Time Series--> refer to code_NO2
-setwd("C:/lab/exam")
-
-library(raster)
-library(rgdal)
-
-aug1995 <-list.files (pattern="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band")
-aug1995
-
-#import the image
-import1995 <- lapply(aug1995, raster)
-rs_1995 <- brick(import1995)
-rs_1995
-plotRGB(rs_1995, r=3, g=2, b=1, stretch="Lin")
-
-#crop the image with mugello shp
-crop_extent <- readOGR(dsn="C:/lab", layer="ammi_uc_mugello_linee")
-crop_extent
-#matching CRS 
-myExtent <- spTransform(crop_extent, CRS("+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "))
-myExtent 
-
-masked <- mask(x=rs_1995, mask=myExtent)
-cropped <- crop(x=masked, y=extent(myExtent))
-mugello1995 <- crop(rs_1995, myExtent)
-mugello1995def <- mask(mugello_1995, myExtent)
-plot(mugello1995,)
 
