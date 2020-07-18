@@ -1215,7 +1215,210 @@ plot(snowitaly, col=cl)
 # zoom(snow, ext=drawExtent())
 # crop(snow, drawExtent())
 
-########
+
+############################################################################################
+############################################################################################
+
+##R_code_exam_project
+
+#1st step: Visualization of data by plotRGB
+#2nd step: Spectral Transformations: NDVI, NDWI, TasseledCap
+
+setwd("C:/lab/exam")
+install.packages("RColorBrewer")
+library(RColorBrewer)
+library(rasterVis) #levelplot
+library(ggplot2)
+library(raster)
+library(rgdal) #readOGR function
+library(RStoolbox) #to calculate NDVI with SpectralIndices function #to use tasseledCap function
+
+###1995 image
+#import the image 1995
+aug1995 <-list.files (pattern="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band")
+import1995 <- lapply(aug1995, raster)
+rs_1995 <- stack(import1995)
+
+##crop the  1995 image with mugello shp
+crop_extent <- readOGR(dsn="C:/lab", layer="ammi_uc_mugello_linee")
+crop_extent
+#matching CRS 
+myExtent <- spTransform(crop_extent, CRS("+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "))
+myExtent 
+
+mugello1995 <- crop (rs_1995, myExtent)
+
+###2011 image
+#import 2011 image 
+aug2011 <-list.files (pattern="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band")
+import2011 <- lapply(aug2011, raster)
+rs_2011 <- stack(import2011)
+
+#crop 2011 image
+mugello2011 <- crop(rs_2011, myExtent)
+plot(mugello2011)
+
+#####1st step: visualize data
+###plot RGB --> natural color
+plotRGB(mugello1995, r=3, g=2, b=1, stretch="Lin", main="1995")
+plot(myExtent, add=T, lwd=3, col="red")
+
+rgblin <- plotRGB(mugello2011, r=3, g=2, b=1, stretch="Lin", main="2011")
+plot(myExtent, add=T, lwd=3, col="red")
+
+###plotRGB --> with NIR component
+png("mugellostretchlin1995.png")
+plotRGB(mugello1995, r=4, g=3, b=2, stretch="Lin")
+plot(myExtent, add=T, lwd=3)
+dev.off ()
+
+png("mugellostretchlin2011.png")
+plotRGB(mugello2011, r=4, g=3, b=2, stretch="Lin")
+plot(myExtent, add=T, lwd=3)
+dev.off()
+
+#plotRGB --> to enhance the noise
+png("mugellostretchhist.png")
+par(mfrow=c(1,2))
+plotRGB(mugello1995, r=4, g=3, b=2, stretch="hist", axes=TRUE, main="1995") 
+plot(myExtent, add=T, lwd=3)
+plotRGB(mugello2011, r=4, g=3, b=2, stretch="hist", axes=TRUE, main="2011")
+plot(myExtent, add=T, lwd=3)
+dev.off()
+
+####2nd step: spectral transformations
+
+##a.NDVI CALCULATION
+#1995
+mugello1995_NDVI <- spectralIndices(mugello1995,red="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band3", nir="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band4", indices="NDVI")
+summary(mugello1995_NDVI)
+
+clr <- colorRampPalette(c("red","green"))(50)
+mugello1995_NDVIstr <-stretch(mugello1995_NDVI, minv=-1, maxv=1)
+
+#2011
+mugello2011_NDVI <- spectralIndices(mugello2011,red="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band3", nir="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band4", indices="NDVI")
+summary(mugello2011_NDVI)
+mugello2011_NDVIstr <-stretch(mugello2011_NDVI, minv=0, maxv=1)
+
+par(mfrow=c(1,2))
+plot(mugello1995_NDVIstr, col=clr, axes=FALSE, main="1995 NDVI")
+plot(myExtent, add=T)
+plot(mugello2011_NDVIstr, col=clr, axes=FALSE, main="2011 NDVI")
+plot(myExtent, add=T)
+dev.off()
+
+#NDVI difference
+mugello_NDVIdif <- mugello2011_NDVI - mugello1995_NDVI
+summary(mugello_NDVIdif)
+
+#plot
+png("NDVI difference.png")
+cldif <- colorRampPalette(c("dark blue","blue", "white", "yellow"))(50)
+plot(mugello_NDVIdif, col=cldif, main="NDVI difference", axes=FALSE, legend=FALSE)
+plot(mugello_NDVIdif, col=cldif, main="NDVI difference", axes=FALSE, legend.only=TRUE, legend.args=list(text="ΔNDVI"))
+plot(myExtent, add=T)
+dev.off()
+
+#histogram
+png("NDVI difference histogram.png")
+hist(mugello_NDVIdif, main="NDVI difference distribution", xlab=NULL, yaxt="n", breaks=50, col="violet", binwidth=100)
+dev.off()
+
+
+##b. NDWI calculation
+mugello1995_NDWI <- spectralIndices(mugello1995, green="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band2", nir="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band4", indices="NDWI")
+mugello2011_NDWI <- spectralIndices(mugello2011, green="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band2", nir="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band4", indices="NDWI")
+clndwi <- colorRampPalette(c("coral4","coral","darkorchid1","deepskyblue","darkblue"))(100)
+summary(mugello1995_NDWI)
+summary(mugello2011_NDWI)
+
+#NDWI difference
+mugello_NDWIdif <- mugello2011_NDWI - mugello1995_NDWI
+
+#plot
+png("NDWIdifference.png")
+plot(mugello_NDWIdif, col=clndwi, main="NDWI difference", axes=FALSE, legend=FALSE)
+plot(mugello_NDWIdif, col=clndwi, main="NDWI difference", axes=FALSE, legend.only=TRUE, legend.args=list(text="ΔNDWI"))
+plot(myExtent, add=T)
+dev.off()
+
+#histogram
+png("NDWIhist.png")
+diffndwi <- hist(mugello_NDWIdif, main="NDWI difference distribution", xlab=NULL, yaxt="n", breaks=50, col="springgreen")
+dev.off()
+
+##c. moving window --> NDVI and NDWI variance
+window <- matrix(1, nrow=7, ncol=7)
+mugello_NDVIdif <- focal(mugello_NDVIdif, w=window, fun=var)
+mugello_NDWIdif <- focal(mugello_NDWIdif, w=window, fun=var)
+
+cl2 <- colorRampPalette(c('dark blue', 'light blue', 'green','yellow','orange','red'))(100) 
+
+png("NDVI variance.png")
+plot(mugello_NDVIdif, col=cl2, main="NDVI variance")
+plot(myExtent, add=T)
+dev.off()
+
+png("NDwI variance.png")
+plot(mugello_NDWIdif, col=cl2, main="NDWI variance")
+plot(myExtent, add=T)
+dev.off()
+
+##d. TasseledCap tranformation
+#1995
+tascap1995 <- tasseledCap(mugello1995, "Landsat5TM")
+summary(tascap1995)
+
+png("tsbrightness1995.png")
+mapTheme1 <- rasterTheme(region=brewer.pal(5,"Oranges"))
+plt1 <- levelplot(tascap1995$brightness, margin=F, par.settings=mapTheme, main="1995 brightness", contour=FALSE)
+plt1 + latticeExtra::layer(sp.lines(myExtent, col="gray30", lwd=0.5))
+dev.off()
+
+png("tsgreenness1995.png")
+mapTheme2 <- rasterTheme(region=brewer.pal(5,"Greens"))
+plt2 <- levelplot(tascap1995$greenness, margin=F, par.settings=mapTheme2, main="1995 greenness")
+plt2 + latticeExtra::layer(sp.lines(myExtent, col="gray30", lwd=0.5))
+dev.off()
+summary(tascap1995$greenness)
+
+png("tswetness1995.png")
+mapTheme3 <- rasterTheme(region=brewer.pal(10,"Blues"))
+plt3 <- levelplot(tascap1995$wetness, margin=F, par.settings=wetcol, main="1995 wetness")
+plt3 + latticeExtra::layer(sp.lines(myExtent, col="black", lwd=0.5))
+dev.off()
+summary(tascap1995$wetness)
+
+png("tcap1995rgb.png")
+plotRGB(tascap1995, r=1, g=2, b=3, stretch="lin")
+plot(myExtent, add=T, lwd=3)
+dev.off()
+
+#2011
+tascap2011 <- tasseledCap(mugello2011, "Landsat5TM")
+tascap2011
+
+png("tswetness2011.png")
+plt4 <- levelplot(tascap2011$wetness, margin=F, par.settings=mapTheme3, main="2011 wetness")
+plt4 + latticeExtra::layer(sp.lines(myExtent, col="gray30", lwd=0.5))
+dev.off()
+
+summary(tascap2011$wetness)
+
+png("tsgreenness2011.png")
+plt5 <- levelplot(tascap2011$greenness, margin=F, par.settings=mapTheme2, main="2011 greenness")
+plt5 + latticeExtra::layer(sp.lines(myExtent, col="gray30", lwd=0.5))
+dev.off()
+
+summary(tascap2011$greenness)
+
+png("tcap2011rgb.png")
+plotRGB(tascap2011, r=1, g=2, b=3, stretch="lin")
+plot(myExtent, add=T, lwd=3)
+dev.off()
+
+
 
 
 
