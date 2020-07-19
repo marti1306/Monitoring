@@ -1350,8 +1350,8 @@ dev.off()
 
 ##c. moving window --> NDVI and NDWI variance
 window <- matrix(1, nrow=7, ncol=7)
-mugello_NDVIdif <- focal(mugello_NDVIdif, w=window, fun=var)
-mugello_NDWIdif <- focal(mugello_NDWIdif, w=window, fun=var)
+mugello_NDVIvar <- focal(mugello_NDVIdif, w=window, fun=var)
+mugello_NDWIvar <- focal(mugello_NDWIdif, w=window, fun=var)
 
 cl2 <- colorRampPalette(c('dark blue', 'light blue', 'green','yellow','orange','red'))(100) 
 
