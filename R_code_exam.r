@@ -1273,6 +1273,7 @@ crop_extent <- readOGR(dsn="C:/lab", layer="ammi_uc_mugello_linee")
 myExtent <- spTransform(crop_extent, CRS("+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 "))
 
 mugello1995 <- crop (rs_1995, myExtent)
+names(mugello1995) <- c('B1', 'B2', 'B3', 'B4', 'B5','B7') #to rename the bands
 
 #2011 image
 aug2011 <-list.files (pattern="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band")
@@ -1282,6 +1283,8 @@ rs_2011 <- stack(import2011)
 #crop 2011 image
 mugello2011 <- crop(rs_2011, myExtent)
 plot(mugello2011, axes =TRUE)
+
+names(mugello2011) <- c('B1', 'B2', 'B3', 'B4', 'B5','B7')
 
 
 #####2nd step: visualize data
@@ -1300,36 +1303,39 @@ drawExtent(show=TRUE, col="green")
 
 ###plotRGB --> with NIR component
 par(col.axis="white",col.lab="white",tck=0)
-plotRGB(mugello1995, r = 4, g = 3, b = 2, stretch="lin",axes=TRUE, main="432 Linear stretch-1995")
+plotRGB(mugello1995, r = 4, g = 3, b = 2, stretch="lin",axes=TRUE, main="Linear stretch-1995")
 box(col="white")
-plot(myExtent, add=T, lwd=2, col="green")
+plot(myExtent, add=T, lwd=2, col="light blue")
+drawExtent(show=TRUE, col="green")
 
 par(col.axis="white",col.lab="white",tck=0)
-plotRGB(mugello2011, r = 4, g = 3, b = 2, stretch="lin",axes=TRUE, main="432 Linear stretch-2011")
+plotRGB(mugello2011, r = 4, g = 3, b = 2, stretch="lin",axes=TRUE, main="Linear stretch-2011")
 box(col="white")
-plot(myExtent, add=T, lwd=2, col="green")
+plot(myExtent, add=T, lwd=2, col="light blue")
+drawExtent(show=TRUE, col="green")
 
 #plotRGB --> to enhance the noise: non-linear stretch
 par(col.axis="white",col.lab="white",tck=0)
-rgblin <- plotRGB(mugello1995, r = 4, g = 3, b = 2, stretch="hist",axes=TRUE, main="432 Non-linear stretch-1995")
+rgblin <- plotRGB(mugello1995, r = 4, g = 3, b = 2, stretch="hist",axes=TRUE, main="Non-linear stretch-1995")
 box(col="white")
-plot(myExtent, add=T, lwd=2, col="green")
+plot(myExtent, add=T, lwd=2, col="yellow")
+drawExtent(show=TRUE, col="green")
 
 par(col.axis="white",col.lab="white",tck=0)
-plotRGB(mugello2011, r = 4, g = 3, b = 2, stretch="hist",axes=TRUE, main="432 Non-linear stretch-2011")
+plotRGB(mugello2011, r = 4, g = 3, b = 2, stretch="hist",axes=TRUE, main="Non-linear stretch-2011")
 box(col="white")
-plot(myExtent, add=T, lwd=2, col="green")
-
+plot(myExtent, add=T, lwd=2, col="yellow")
+drawExtent(show=TRUE, col="green")
 
 ####2nd step: spectral transformation--> NDVI
 
 ##NDVI CALCULATION
 #1995
-mugello1995_NDVI <- spectralIndices(mugello1995, red="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band3", nir="LT05_L1TP_192029_19950802_20180214_01_T1_sr_band4", indices="NDVI")
+mugello1995_NDVI <- spectralIndices(mugello1995, red=B3, nir=B4, indices="NDVI")
 summary(mugello1995_NDVI)
 
 #2011
-mugello2011_NDVI <- spectralIndices(mugello2011,red="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band3", nir="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band4", indices="NDVI")
+mugello2011_NDVI <- spectralIndices(mugello2011,red=B3, nir=B4, indices="NDVI")
 summary(mugello2011_NDVI)
 
 #NDVI difference
