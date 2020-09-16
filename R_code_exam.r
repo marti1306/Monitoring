@@ -1275,6 +1275,9 @@ myExtent <- spTransform(crop_extent, CRS("+proj=utm +zone=32 +datum=WGS84 +units
 mugello1995 <- crop (rs_1995, myExtent)
 names(mugello1995) <- c('B1', 'B2', 'B3', 'B4', 'B5','B7') #to rename the bands
 
+#scatterplot-relation between bands
+pairs(mugello1995[[3:4]], main="Red versus NIR-1995")
+
 #2011 image
 aug2011 <-list.files (pattern="LT05_L1TP_192029_20110814_20161007_01_T1_sr_band")
 import2011 <- lapply(aug2011, raster)
@@ -1286,8 +1289,10 @@ plot(mugello2011, axes =TRUE)
 
 names(mugello2011) <- c('B1', 'B2', 'B3', 'B4', 'B5','B7')
 
+#scatterplot-relation between bands
+pairs(mugello2011[[3:4]], main="Red versus NIR-2011")
 
-#####2nd step: visualize data
+#####2nd step: radiometric enhancement
 ###plot RGB --> natural color
 par(col.axis="white",col.lab="white",tck=0)
 plotRGB(mugello1995, r = 3, g = 2, b = 1, stretch="lin",axes=TRUE, main="Mugello - 1995")
